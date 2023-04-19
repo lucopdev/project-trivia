@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import getToken from '../services/fetchAPI';
 
 class Login extends Component {
   state = {
@@ -11,6 +13,13 @@ class Login extends Component {
     this.setState({
       [name]: value,
     });
+  };
+
+  handleClick = async () => {
+    const token = await getToken();
+    localStorage.setItem('token', token);
+    const { history } = this.props;
+    history.push('/game');
   };
 
   render() {
@@ -35,6 +44,7 @@ class Login extends Component {
         <button
           data-testid="btn-play"
           disabled={ !isValid }
+          onClick={ this.handleClick }
         >
           Play
         </button>
@@ -42,5 +52,11 @@ class Login extends Component {
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
 
 export default Login;
