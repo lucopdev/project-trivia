@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Button from '../components/ButtonConfig';
 
 class Login extends Component {
   state = {
@@ -38,6 +39,7 @@ class Login extends Component {
         >
           Play
         </button>
+        <Button />
       </div>
     );
   }
