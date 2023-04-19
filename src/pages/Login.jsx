@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import getToken from '../services/fetchAPI';
+import Button from '../components/ButtonConfig';
+
 
 class Login extends Component {
   state = {
@@ -48,6 +50,7 @@ class Login extends Component {
         >
           Play
         </button>
+        <Button />
       </div>
     );
   }
