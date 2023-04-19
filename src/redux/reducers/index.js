@@ -1,21 +1,8 @@
 import { combineReducers } from 'redux';
+import player from './player';
 
-const INITIAL_STATE = {
-  chave: '',
-};
-
-const exampleReducer = (state = INITIAL_STATE, action) => {
-  switch (action.type) {
-  case 'ACTION_STRING':
-    return {
-      ...state,
-      chave: '',
-    };
-  default:
-    return state;
-  }
-};
 const rootReducer = combineReducers({
-  exampleReducer,
+  player,
 });
+
 export default rootReducer;
