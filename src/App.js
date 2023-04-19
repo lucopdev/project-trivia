@@ -5,7 +5,6 @@ import Login from './pages/Login';
 import Game from './pages/Game';
 import Config from './pages/Configs';
 
-
 export default function App() {
   return (
     <div className="App">
@@ -20,16 +19,16 @@ export default function App() {
           component={ Game }
         />
 
-        <Route 
-          exact 
-          path="/" 
+        <Route
+          exact
+          path="/"
           component={ Login }
-         />
-        <Route 
-          exact 
-          path="/configuracoes" 
-          component={ Config } 
-         />
+        />
+        <Route
+          exact
+          path="/configuracoes"
+          component={ Config }
+        />
       </Switch>
     </div>
   );
