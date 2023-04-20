@@ -6,7 +6,7 @@ import md5 from 'crypto-js/md5';
 class FeedbackPage extends React.Component {
   render() {
     const { score, name, gravatarEmail } = this.props;
-    // const scoreMinimum = 3;
+    const scoreMinimum = 3;
 
     const hash = md5(gravatarEmail).toString();
     const gravatarUrl = `https://www.gravatar.com/avatar/${hash}`;
@@ -22,16 +22,15 @@ class FeedbackPage extends React.Component {
           />
           <h1 data-testid="header-player-name">{ name }</h1>
           <p data-testid="header-score">
-            Sua pontuação atual:
-            {` ${score}` }
+            { score }
           </p>
         </header>
-        {/* <h1>Feedbacks do jogo</h1>
+        <h1>Feedbacks do jogo</h1>
         <p data-testid="feedback-text">
           {
             score >= scoreMinimum ? 'Well Done!' : 'Could be better...'
           }
-        </p> */}
+        </p>
       </section>
     );
   }

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import Feedback from './Feedback';
 import { changeScore } from '../redux/action';
 
 class Game extends Component {
@@ -12,6 +12,7 @@ class Game extends Component {
     counter: 0,
     data: {},
     toRespond: false,
+    magicNumber: 5,
   };
 
   async componentDidMount() {
@@ -40,27 +41,29 @@ class Game extends Component {
   };
 
   randomizeQA = (data) => {
-    const { counter } = this.state;
-    const incorrectAnswer = data.results[counter].incorrect_answers;
-    const correctAnswer = data.results[counter].correct_answer;
+    const { counter, magicNumber } = this.state;
+    if (counter < magicNumber) {
+      const incorrectAnswer = data.results[counter].incorrect_answers;
+      const correctAnswer = data.results[counter].correct_answer;
 
-    this.setState({
-      qaRandom: [correctAnswer, ...incorrectAnswer],
-    }, () => {
-      const { qaRandom } = this.state;
-      for (let i = qaRandom.length - 1; i > 0; i -= 1) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [qaRandom[i], qaRandom[j]] = [qaRandom[j], qaRandom[i]];
-      }
       this.setState({
-        qaRandom,
+        qaRandom: [correctAnswer, ...incorrectAnswer],
+      }, () => {
+        const { qaRandom } = this.state;
+        for (let i = qaRandom.length - 1; i > 0; i -= 1) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [qaRandom[i], qaRandom[j]] = [qaRandom[j], qaRandom[i]];
+        }
+        this.setState({
+          qaRandom,
+        });
       });
-    });
+    }
   };
 
   verifyIsCorrect = (element, correctAnswer) => {
     const verify = element.innerHTML === correctAnswer;
-    console.log(verify);
+
     this.setState({
       displayAnswer: true,
     });
@@ -104,7 +107,7 @@ class Game extends Component {
 
   render() {
     // const { questions } = this.props;
-    const { counter, qaRandom, displayAnswer, data, toRespond } = this.state;
+    const { counter, qaRandom, displayAnswer, data, toRespond, magicNumber } = this.state;
 
     const styleCorrect = {
       border: '3px solid rgb(6, 240, 15)',
@@ -112,10 +115,12 @@ class Game extends Component {
     const styleIncorrect = {
       border: '3px solid red',
     };
+
+    if (counter === magicNumber) return (<Redirect to="/feedbacks" />);
+
     return (
       <div>
         <Header />
-        <Feedback />
         {data.results?.map((question, index) => (
           <div key={ index }>
             {index === counter
