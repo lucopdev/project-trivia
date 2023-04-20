@@ -42,6 +42,7 @@ class Game extends Component {
     const { counter } = this.state;
     const incorrectAnswer = data.results[counter].incorrect_answers;
     const correctAnswer = data.results[counter].correct_answer;
+
     this.setState({
       qaRandom: [correctAnswer, ...incorrectAnswer],
     }, () => {
@@ -93,13 +94,17 @@ class Game extends Component {
     this.setState((prevState) => ({
       counter: prevState.counter + 1,
       toRespond: false,
-    }));
+      displayAnswer: false,
+    }), () => {
+      const { data } = this.state;
+      this.randomizeQA(data);
+    });
   };
 
   render() {
     // const { questions } = this.props;
     const { counter, qaRandom, displayAnswer, data, toRespond } = this.state;
-   
+
     const styleCorrect = {
       border: '3px solid rgb(6, 240, 15)',
     };
