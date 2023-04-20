@@ -1,4 +1,4 @@
-import { ADD_USER } from '../action';
+import { ADD_USER } from '../types';
 
 const INITIAL_STATE = {
   name: '',
