@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { fetchEndpointQA } from '../redux/action';
+// import { fetchEndpointQA } from '../redux/action';
 import Header from '../components/Header';
 
 class Game extends Component {
@@ -9,24 +9,33 @@ class Game extends Component {
     qaRandom: [],
     isCorrect: false,
     counter: 0,
+    data: {},
   };
 
   async componentDidMount() {
     const token = localStorage.getItem('token');
-    const { dispatch } = this.props;
-    await dispatch(fetchEndpointQA(token));
-    this.randomizeQA();
-    this.isValidToken();
+    // const { dispatch } = this.props;
+    const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
+    const data = await response.json();
+    this.isValidToken(data);
+
+    this.setState({
+      isCorrect: false,
+      data,
+    });
   }
 
-  isValidToken = async () => {
-    const { questions, history } = this.props;
-    console.log(questions);
+  isValidToken = (data) => {
+    const { history } = this.props;
+    console.log(data);
     const LOGOUT_CODE = 3;
-    if (questions.response_code === LOGOUT_CODE) {
+
+    if (data.response_code === LOGOUT_CODE) {
       localStorage.removeItem('token');
       history.push('/');
+      return;
     }
+    this.randomizeQA(data);
   };
 
   // counter = () => {
@@ -35,13 +44,13 @@ class Game extends Component {
   //   }));
   // };
 
-  randomizeQA = () => {
-    const { questions } = this.props;
+  randomizeQA = (data) => {
+    // const { questions } = this.props;
     const { counter } = this.state;
-    const incorrectAnswer = questions.results[counter].incorrect_answers;
-    const correctAnswer = questions.results[counter].correct_answer;
+    const incorrectAnswer = data.results[counter].incorrect_answers;
+    const correctAnswer = data.results[counter].correct_answer;
     this.setState({
-      qaRandom: [...incorrectAnswer, correctAnswer],
+      qaRandom: [correctAnswer, ...incorrectAnswer],
     }, () => {
       const { qaRandom } = this.state;
       for (let i = qaRandom.length - 1; i > 0; i -= 1) {
@@ -54,39 +63,30 @@ class Game extends Component {
     });
   };
 
-  verifyIsCorrect = ({ target }, answer) => {
-    const verify = target.innerHTML === answer;
+  verifyIsCorrect = () => {
     this.setState({
-      isCorrect: verify,
-    }, () => {
-      const { isCorrect } = this.state;
-      console.log(isCorrect);
+      isCorrect: true,
     });
   };
 
   handleClick = async (element, correctAnswer) => {
     this.verifyIsCorrect(element, correctAnswer);
-    this.setState({
-      isCorrect: false,
-    });
   };
 
   render() {
-    const { questions } = this.props;
-    console.log(questions);
-    const { counter, qaRandom, isCorrect } = this.state;
+    // const { questions } = this.props;
+    const { counter, qaRandom, isCorrect, data } = this.state;
+    console.log(isCorrect);
     const styleCorrect = {
-      color: 'white',
-      backgroundColor: 'green',
+      border: '3px solid rgb(6, 240, 15)',
     };
     const styleIncorrect = {
-      color: 'white',
-      backgroundColor: 'grey',
+      border: '3px solid red',
     };
     return (
       <div>
         <Header />
-        {questions.results?.map((question, index) => (
+        {data.results?.map((question, index) => (
           <div key={ index }>
             {index === counter
             && (
@@ -138,7 +138,7 @@ const mapStateToProps = (state) => ({
 });
 
 Game.propTypes = {
-  dispatch: PropTypes.func.isRequired,
+  // dispatch: PropTypes.func.isRequired,
   questions: PropTypes.shape(({
     response_code: PropTypes.number,
     results: PropTypes.arrayOf(PropTypes.shape({
