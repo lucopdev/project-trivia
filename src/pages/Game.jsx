@@ -10,6 +10,7 @@ class Game extends Component {
     isCorrect: false,
     counter: 0,
     data: {},
+    toRespond: false,
   };
 
   async componentDidMount() {
@@ -22,6 +23,7 @@ class Game extends Component {
     this.setState({
       isCorrect: false,
       data,
+      toRespond: false,
     });
   }
 
@@ -71,11 +73,19 @@ class Game extends Component {
 
   handleClick = async (element, correctAnswer) => {
     this.verifyIsCorrect(element, correctAnswer);
+    this.setState({ toRespond: true });
+  };
+
+  nextClick = () => {
+    this.setState((prevState) => ({
+      counter: prevState.counter + 1,
+      toRespond: false,
+    }));
   };
 
   render() {
     // const { questions } = this.props;
-    const { counter, qaRandom, isCorrect, data } = this.state;
+    const { counter, qaRandom, isCorrect, data, toRespond } = this.state;
     console.log(isCorrect);
     const styleCorrect = {
       border: '3px solid rgb(6, 240, 15)',
@@ -127,7 +137,16 @@ class Game extends Component {
             )}
           </div>
         ))}
-
+        {
+          toRespond && (
+            <button
+              data-testid="btn-next"
+              onClick={ () => this.nextClick() }
+            >
+              Next
+            </button>
+          )
+        }
       </div>
     );
   }
