@@ -20,7 +20,7 @@ class Login extends Component {
 
   handleClick = async () => {
     const token = await getToken();
-    localStorage.setItem('token', token);
+    localStorage.setItem('token', token.token);
     const { history, dispatch } = this.props;
     const { inputEmail, inputName } = this.state;
     const userObject = {
