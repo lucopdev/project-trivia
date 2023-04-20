@@ -1,4 +1,4 @@
-import { ADD_USER } from '../types';
+import { ADD_USER, SCORE_CHANGE } from '../types';
 
 const INITIAL_STATE = {
   name: '',
@@ -15,7 +15,10 @@ const player = (state = INITIAL_STATE, action) => {
       name: action.payload.inputName,
       gravatarEmail: action.payload.inputEmail,
     };
-
+  case SCORE_CHANGE:
+    return {
+      score: state.score + action.payload,
+    };
   default:
     return state;
   }
