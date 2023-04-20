@@ -4,6 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Login from './pages/Login';
 import Game from './pages/Game';
 import Config from './pages/Configs';
+import Ranking from './pages/Ranking';
 
 export default function App() {
   return (
@@ -28,6 +29,11 @@ export default function App() {
           exact
           path="/configuracoes"
           component={ Config }
+        />
+        <Route
+          exact
+          path="/ranking"
+          component={ Ranking }
         />
       </Switch>
     </div>
