@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Login from './pages/Login';
 import Game from './pages/Game';
 import Config from './pages/Configs';
-import Ranking from './pages/Ranking';
+import Feedback from './pages/Feedback';
 
 export default function App() {
   return (
@@ -32,8 +32,8 @@ export default function App() {
         />
         <Route
           exact
-          path="/ranking"
-          component={ Ranking }
+          path="/feedbacks"
+          component={ Feedback }
         />
       </Switch>
     </div>
