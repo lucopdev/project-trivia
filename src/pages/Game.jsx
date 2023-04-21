@@ -13,6 +13,8 @@ class Game extends Component {
     data: {},
     toRespond: false,
     magicNumber: 5,
+    timer: 30,
+    disable: false,
   };
 
   async componentDidMount() {
@@ -31,14 +33,28 @@ class Game extends Component {
 
   isValidToken = (data) => {
     const { history } = this.props;
+    console.log(data);
     const LOGOUT_CODE = 3;
-
     if (data.response_code === LOGOUT_CODE) {
       localStorage.removeItem('token');
       history.push('/');
       return;
     }
     this.randomizeQA(data);
+    const timerFunc = setInterval(this.timer, '1000');
+    setTimeout(() => {
+      this.setState({
+        disable: true,
+      });
+      clearInterval(timerFunc);
+    }, '30000');
+  };
+
+  timer = () => {
+    const { timer } = this.state;
+    this.setState({
+      timer: timer - 1,
+    });
   };
 
   randomizeQA = (data) => {
@@ -111,7 +127,15 @@ class Game extends Component {
 
   render() {
     // const { questions } = this.props;
-    const { counter, qaRandom, displayAnswer, data, toRespond, magicNumber } = this.state;
+    const {
+      counter,
+      qaRandom,
+      displayAnswer,
+      data,
+      toRespond,
+      magicNumber,
+      disable,
+      timer } = this.state;
 
     const styleCorrect = {
       border: '3px solid rgb(6, 240, 15)',
@@ -125,6 +149,7 @@ class Game extends Component {
     return (
       <div>
         <Header />
+        <p>{timer}</p>
         {data.results?.map((question, index) => (
           <div key={ index }>
             {index === counter
@@ -145,6 +170,7 @@ class Game extends Component {
                   >
                     {qaRandom.map((answer, innerIndex) => (
                       <button
+                        disabled={ disable }
                         style={ displayAnswer
                            && (answer === question.correct_answer)
                           ? styleCorrect : styleIncorrect }
