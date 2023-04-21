@@ -1,4 +1,5 @@
 import {
+  ADD_PLAYER_SCORE,
   ADD_USER,
   FETCH_QA,
   MAKE_ASSERTION,
@@ -37,4 +38,9 @@ export const makeAssertion = () => ({
 
 export const resetGame = () => ({
   type: RESET_GAME,
+});
+
+export const addPlayerScore = (player) => ({
+  type: ADD_PLAYER_SCORE,
+  payload: player,
 });
