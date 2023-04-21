@@ -2,10 +2,17 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
+import { Link } from 'react-router-dom';
+import { resetGame } from '../redux/action';
 
 class FeedbackPage extends React.Component {
+  playAgainFunc = () => {
+    const { dispatch } = this.props;
+    dispatch(resetGame());
+  };
+
   render() {
-    const { score, name, gravatarEmail } = this.props;
+    const { score, name, gravatarEmail, assertions } = this.props;
     const scoreMinimum = 3;
 
     const hash = md5(gravatarEmail).toString();
@@ -24,13 +31,26 @@ class FeedbackPage extends React.Component {
           <p data-testid="header-score">
             { score }
           </p>
+          <p data-testid="feedback-total-score">
+            { score }
+          </p>
+          <p data-testid="feedback-total-question">
+            { assertions }
+          </p>
         </header>
         <h1>Feedbacks do jogo</h1>
         <p data-testid="feedback-text">
           {
-            score >= scoreMinimum ? 'Well Done!' : 'Could be better...'
+            assertions >= scoreMinimum ? 'Well Done!' : 'Could be better...'
           }
         </p>
+        <Link to="/">
+          <button
+            onClick={ this.playAgainFunc }
+          >
+            Play again
+          </button>
+        </Link>
       </section>
     );
   }
@@ -40,12 +60,15 @@ FeedbackPage.propTypes = {
   score: PropTypes.number.isRequired,
   name: PropTypes.string.isRequired,
   gravatarEmail: PropTypes.string.isRequired,
+  assertions: PropTypes.number.isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   score: state.player.score,
   name: state.player.name,
   gravatarEmail: state.player.gravatarEmail,
+  assertions: state.player.assertions,
 });
 
 export default connect(mapStateToProps)(FeedbackPage);
