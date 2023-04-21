@@ -119,6 +119,7 @@ class Game extends Component {
       counter: prevState.counter + 1,
       toRespond: false,
       displayAnswer: false,
+      timer: 30,
     }), () => {
       const { data } = this.state;
       this.randomizeQA(data);

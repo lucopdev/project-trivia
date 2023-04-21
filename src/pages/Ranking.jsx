@@ -8,9 +8,9 @@ class Ranking extends Component {
   };
 
   componentDidMount() {
-    if (!JSON.parse(localStorage.getItem('ranking'))) {
-      localStorage.setItem('ranking', []);
-    }
+    // if (!JSON.parse(localStorage.getItem('ranking'))) {
+    //   localStorage.setItem('ranking', []);
+    // }
     const listFromStorage = JSON.parse(localStorage.getItem('ranking'));
     const orderedRanking = listFromStorage.sort((a, b) => b.score - a.score);
     this.setState({ orderedRanking });
@@ -34,7 +34,7 @@ class Ranking extends Component {
           {
             orderedRanking.sort((a, b) => b.score - a.score).map((player, index) => (
               <li key={ index }>
-                <img src={ player.gravatarUrl } alt="" />
+                <img src={ player.gravatarUrl } alt="player-avatar" />
                 <p data-testid={ `player-name-${index}` }>{ player.name }</p>
                 <p data-testid={ `player-score-${index}` }>{ player.score }</p>
               </li>
