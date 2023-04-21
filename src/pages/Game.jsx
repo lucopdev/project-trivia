@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { changeScore } from '../redux/action';
+import { changeScore, makeAssertion } from '../redux/action';
 
 class Game extends Component {
   state = {
@@ -62,8 +62,12 @@ class Game extends Component {
   };
 
   verifyIsCorrect = (element, correctAnswer) => {
+    const { dispatch } = this.props;
     const verify = element.innerHTML === correctAnswer;
-
+    console.log(verify);
+    if (verify) {
+      dispatch(makeAssertion());
+    }
     this.setState({
       displayAnswer: true,
     });
@@ -90,7 +94,6 @@ class Game extends Component {
 
   handleClick = async (element, correctAnswer, difficulty) => {
     this.scoreTable(element, correctAnswer, difficulty);
-    this.verifyIsCorrect(element, correctAnswer);
     this.setState({ toRespond: true });
   };
 

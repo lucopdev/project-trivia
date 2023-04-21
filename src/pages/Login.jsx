@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import getToken from '../services/fetchAPI';
 import Button from '../components/ButtonConfig';
 import { addUser } from '../redux/action';
+import logoTrivia from '../trivia.png';
+import '../styles/Login.css';
 
 class Login extends Component {
   state = {
@@ -35,7 +37,8 @@ class Login extends Component {
     const { inputName, inputEmail } = this.state;
     const isValid = (inputName.length > 0 && inputEmail.length > 0);
     return (
-      <div>
+      <div className="main-login">
+        <img className="logo-trivia" src={ logoTrivia } alt="logo-trivia" />
         <input
           value={ inputName }
           name="inputName"

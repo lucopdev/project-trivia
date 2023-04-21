@@ -1,4 +1,10 @@
-import { ADD_USER, FETCH_QA, SCORE_CHANGE } from '../types';
+import {
+  ADD_USER,
+  FETCH_QA,
+  MAKE_ASSERTION,
+  RESET_GAME,
+  SCORE_CHANGE,
+} from '../types';
 
 export const addUser = (user) => ({
   type: ADD_USER,
@@ -23,4 +29,12 @@ export const fetchEndpointQA = (token) => async (dispatch) => {
 export const changeScore = (score) => ({
   type: SCORE_CHANGE,
   payload: score,
+});
+
+export const makeAssertion = () => ({
+  type: MAKE_ASSERTION,
+});
+
+export const resetGame = () => ({
+  type: RESET_GAME,
 });
