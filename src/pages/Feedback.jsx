@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import md5 from 'crypto-js/md5';
 import { Link } from 'react-router-dom';
-import { resetGame } from '../redux/action';
+import { addPlayerScore, resetGame } from '../redux/action';
 
 class FeedbackPage extends React.Component {
   playAgainFunc = () => {
@@ -12,11 +12,28 @@ class FeedbackPage extends React.Component {
   };
 
   render() {
-    const { score, name, gravatarEmail, assertions } = this.props;
+    const { score, name, gravatarEmail, assertions, dispatch } = this.props;
     const scoreMinimum = 3;
+
+    if (!JSON.parse(localStorage.getItem('ranking'))) {
+      localStorage.setItem('ranking', JSON.stringify([]));
+    }
+
+    const currentStorage = JSON.parse(localStorage.getItem('ranking'));
 
     const hash = md5(gravatarEmail).toString();
     const gravatarUrl = `https://www.gravatar.com/avatar/${hash}`;
+
+    const savedPlayer = {
+      name,
+      score,
+      gravatarUrl,
+      assertions,
+    };
+
+    const saveToStorage = [...currentStorage, savedPlayer];
+    localStorage.setItem('ranking', JSON.stringify(saveToStorage));
+    dispatch(addPlayerScore(savedPlayer));
 
     return (
       <section className="info-score">
@@ -46,6 +63,7 @@ class FeedbackPage extends React.Component {
         </p>
         <Link to="/">
           <button
+            data-testid="btn-play-again"
             onClick={ this.playAgainFunc }
           >
             Play again

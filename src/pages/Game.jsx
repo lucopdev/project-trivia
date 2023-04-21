@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { changeScore, makeAssertion } from '../redux/action';
+import { changeScore, makeAssertion, resetGame } from '../redux/action';
 
 class Game extends Component {
   state = {
@@ -17,7 +17,7 @@ class Game extends Component {
 
   async componentDidMount() {
     const token = localStorage.getItem('token');
-    // const { dispatch } = this.props;
+    const { dispatch } = this.props;
     const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const data = await response.json();
     this.isValidToken(data);
@@ -26,6 +26,7 @@ class Game extends Component {
       data,
       toRespond: false,
     });
+    dispatch(resetGame());
   }
 
   isValidToken = (data) => {
