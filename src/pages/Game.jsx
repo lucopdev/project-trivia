@@ -150,7 +150,11 @@ class Game extends Component {
     return (
       <div>
         <Header />
-        <p>{timer}</p>
+        <h3
+          data-testid="timer"
+        >
+          {timer}
+        </h3>
         {data.results?.map((question, index) => (
           <div key={ index }>
             {index === counter
