@@ -16,14 +16,13 @@ describe('Testa a pagina de game', () => {
     localStorage.setItem('ranking', JSON.stringify(rankingStorageMock));
 
     const mockQuestions = () => {
-      jest.spyOn(global, 'fetch').mockResolvedValue({
-        json: () => Promise.resolve(
-          questions,
-        ),
+      global.fetch = jest.fn().mockResolvedValue({
+        json: jest.fn().mockResolvedValue(questions),
       });
     };
     mockQuestions();
   });
+
   it('Verifica se os elementos são renderizado na tela', async () => {
     const { history } = renderWithRouterAndRedux(<Game />, { initialState });
     const responseCode = 3;
