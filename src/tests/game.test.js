@@ -1,6 +1,7 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
+import userEvent from '@testing-library/user-event';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import { initialState, token } from './helpers/initialStateMock';
 import Game from '../pages/Game';
@@ -27,6 +28,7 @@ describe('Testa a pagina de game', () => {
     const { history } = renderWithRouterAndRedux(<Game />, { initialState });
     const responseCode = 3;
     const timeOut = 1000;
+
     if (questions.response_code === responseCode) {
       expect(!JSON.parse(localStorage.getItem('token')));
       act(() => {
@@ -39,14 +41,25 @@ describe('Testa a pagina de game', () => {
 
       expect(timer).toBeInTheDocument();
       expect(timer.innerHTML).toBe('30');
+
       await waitFor(() => {
         expect(timer.innerHTML).toBe('29');
       }, timeOut);
+
       expect(await screen.findByTestId('question-text')).toBeInTheDocument();
       expect(await screen.findByTestId('question-category')).toBeInTheDocument();
       expect(await screen.findByTestId('answer-options')).toBeInTheDocument();
       expect(correctBtn).toBeInTheDocument();
+
+      userEvent.click(correctBtn);
+      await waitFor(() => {
+        const nextBtn = screen.queryByRole('button', { name: /next/i });
+        expect(nextBtn).toBeInTheDocument();
+        userEvent.click(nextBtn);
+        expect(timer.innerHTML).toBe('30');
+      });
     }
+
     // questions.results.forEach( async (questionA, outerIndex) => {
     //   const correctBtn = await screen.findByTestId('correct-answer');
     //   expect(correctBtn).toBeInTheDocument();
