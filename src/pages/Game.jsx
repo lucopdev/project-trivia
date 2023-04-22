@@ -18,22 +18,19 @@ class Game extends Component {
   };
 
   async componentDidMount() {
-    const token = localStorage.getItem('token');
     const { dispatch } = this.props;
+    dispatch(resetGame());
+    const token = localStorage.getItem('token');
     const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
     const data = await response.json();
     this.isValidToken(data);
     this.setState({
-      displayAnswer: false,
       data,
-      toRespond: false,
     });
-    dispatch(resetGame());
   }
 
   isValidToken = (data) => {
     const { history } = this.props;
-    console.log(data);
     const LOGOUT_CODE = 3;
     if (data.response_code === LOGOUT_CODE) {
       localStorage.removeItem('token');
@@ -41,20 +38,29 @@ class Game extends Component {
       return;
     }
     this.randomizeQA(data);
-    const timerFunc = setInterval(this.timer, '1000');
-    setTimeout(() => {
-      this.setState({
-        disable: true,
-      });
-      clearInterval(timerFunc);
-    }, '30000');
+    this.funcTimer();
   };
 
-  timer = () => {
-    const { timer } = this.state;
-    this.setState({
-      timer: timer - 1,
-    });
+  funcTimer = () => {
+    const { toRespond, timer } = this.state;
+    const timerInterval = setInterval(this.timerCount, '1000');
+    if (toRespond || timer === 0) {
+      clearInterval(timerInterval);
+    }
+  };
+
+  timerCount = () => {
+    const { timer, toRespond } = this.state;
+    if (timer === 0 || toRespond) {
+      this.setState({
+        timer,
+        disable: true,
+      });
+    } else {
+      this.setState({
+        timer: timer - 1,
+      });
+    }
   };
 
   randomizeQA = (data) => {
@@ -62,7 +68,6 @@ class Game extends Component {
     if (counter < magicNumber) {
       const incorrectAnswer = data.results[counter].incorrect_answers;
       const correctAnswer = data.results[counter].correct_answer;
-
       this.setState({
         qaRandom: [correctAnswer, ...incorrectAnswer],
       }, () => {
@@ -93,17 +98,13 @@ class Game extends Component {
 
   scoreTable = (element, correctAnswer, difficulty) => {
     const { dispatch } = this.props;
-    const time = 30; // colocar o timer correto do estado
-    const hard = 3;
-    const medium = 2;
-    const easy = 1;
+    const { timer } = this.state;
+    const scoreRules = { easy: 1, medium: 2, hard: 3 };
     const correctPoint = 10;
     let sum = 0;
-
-    if (difficulty === 'easy') sum = correctPoint + (time * easy);
-    if (difficulty === 'medium') sum = correctPoint + (time * medium);
-    if (difficulty === 'hard') sum = correctPoint + (time * hard);
-
+    if (difficulty === 'easy') sum = correctPoint + (timer * scoreRules.easy);
+    if (difficulty === 'medium') sum = correctPoint + (timer * scoreRules.medium);
+    if (difficulty === 'hard') sum = correctPoint + (timer * scoreRules.hard);
     if (this.verifyIsCorrect(element, correctAnswer)) {
       dispatch(changeScore(sum));
     }
@@ -111,7 +112,7 @@ class Game extends Component {
 
   handleClick = async (element, correctAnswer, difficulty) => {
     this.scoreTable(element, correctAnswer, difficulty);
-    this.setState({ toRespond: true });
+    this.setState({ toRespond: true, disable: true });
   };
 
   nextClick = () => {
@@ -120,6 +121,7 @@ class Game extends Component {
       toRespond: false,
       displayAnswer: false,
       timer: 30,
+      disable: false,
     }), () => {
       const { data } = this.state;
       this.randomizeQA(data);
@@ -127,7 +129,6 @@ class Game extends Component {
   };
 
   render() {
-    // const { questions } = this.props;
     const {
       counter,
       qaRandom,
@@ -137,20 +138,22 @@ class Game extends Component {
       magicNumber,
       disable,
       timer } = this.state;
-
     const styleCorrect = {
       border: '3px solid rgb(6, 240, 15)',
     };
     const styleIncorrect = {
       border: '3px solid red',
     };
-
     if (counter === magicNumber) return (<Redirect to="/feedbacks" />);
 
     return (
       <div>
         <Header />
-        <p>{timer}</p>
+        <h3
+          data-testid="timer"
+        >
+          {timer}
+        </h3>
         {data.results?.map((question, index) => (
           <div key={ index }>
             {index === counter
@@ -200,10 +203,10 @@ class Game extends Component {
           </div>
         ))}
         {
-          toRespond && (
+          (toRespond || disable) && (
             <button
               data-testid="btn-next"
-              onClick={ () => this.nextClick() }
+              onClick={ this.nextClick }
             >
               Next
             </button>
