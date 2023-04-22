@@ -50,8 +50,9 @@ describe('Testa a pagina de game', () => {
       expect(await screen.findByTestId('question-category')).toBeInTheDocument();
       expect(await screen.findByTestId('answer-options')).toBeInTheDocument();
       expect(correctBtn).toBeInTheDocument();
-
       userEvent.click(correctBtn);
+      expect(correctBtn).toBeDisabled();
+      
       await waitFor(() => {
         const nextBtn = screen.queryByRole('button', { name: /next/i });
         expect(nextBtn).toBeInTheDocument();
