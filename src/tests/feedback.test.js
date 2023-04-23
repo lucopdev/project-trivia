@@ -4,6 +4,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import Feedback from '../pages/Feedback';
 import { rankingStorageMock } from './helpers/rankingStorageMock';
+import { initialState } from './helpers/initialStateMock';
 // import { wait } from '@testing-library/user-event/dist/utils';
 
 describe('Testa a pagina de feedback', () => {
@@ -63,7 +64,7 @@ describe('Testa a pagina de feedback', () => {
     }
   });
   it('Testa se ao iniciar a tela de feedback, o localStorage está vazio', () => {
-    renderWithRouterAndRedux(<Feedback />, { initialEntries: ['/feedback'] })
+    renderWithRouterAndRedux(<Feedback />, { initialEntries: ['/feedback'], initialState })
     const emptyData = JSON.parse(localStorage.getItem([]));
     console.log(emptyData);
   });

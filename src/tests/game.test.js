@@ -9,6 +9,7 @@ import { questions } from './helpers/questionsMock';
 import { act } from 'react-dom/test-utils';
 
 describe('Testa a pagina de game', () => {
+  
   beforeEach(() => {
     localStorage.setItem('token', JSON.stringify(token.token));
     localStorage.setItem('ranking', JSON.stringify(rankingStorageMock));
