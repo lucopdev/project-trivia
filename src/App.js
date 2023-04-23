@@ -28,7 +28,7 @@ export default function App() {
         />
         <Route
           exact
-          path="/configuracoes"
+          path="/configuration"
           component={ Config }
         />
         <Route

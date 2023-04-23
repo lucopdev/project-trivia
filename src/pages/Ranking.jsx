@@ -8,9 +8,9 @@ class Ranking extends Component {
   };
 
   componentDidMount() {
-    // if (!JSON.parse(localStorage.getItem('ranking'))) {
-    //   localStorage.setItem('ranking', []);
-    // }
+    if (!JSON.parse(localStorage.getItem('ranking'))) {
+      localStorage.setItem('ranking', []);
+    }
     const listFromStorage = JSON.parse(localStorage.getItem('ranking'));
     const orderedRanking = listFromStorage.sort((a, b) => b.score - a.score);
     this.setState({ orderedRanking });

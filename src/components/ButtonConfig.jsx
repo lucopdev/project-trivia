@@ -17,7 +17,7 @@ class Button extends React.Component {
   render() {
     const { isClicked } = this.state;
 
-    if (isClicked) return (<Redirect to="/configuracoes" />);
+    if (isClicked) return (<Redirect to="/configuration" />);
 
     return (
       <button

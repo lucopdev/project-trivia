@@ -1,7 +1,6 @@
 import React from 'react';
 import { screen } from '@testing-library/react';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
-import { initialState } from './helpers/initialStateMock';
 import Ranking from '../pages/Ranking';
 import { rankingStorageMock } from './helpers/rankingStorageMock';
 // import userEvent from '@testing-library/user-event';
@@ -14,7 +13,7 @@ describe('Testa a pagina de Rank', () => {
     localStorage.setItem('ranking', JSON.stringify(rankingStorageMock));
   });
   it('Verifica se o logo é renderizado na tela', async () => {
-    renderWithRouterAndRedux(<Ranking />, { initialState });
+    renderWithRouterAndRedux(<Ranking />);
 
     const avatar = screen.getAllByAltText('player-avatar')[0];
     expect(avatar).toBeInTheDocument();

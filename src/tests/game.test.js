@@ -1,17 +1,15 @@
 import React from 'react';
 import { screen, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import userEvent from '@testing-library/user-event';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
-import { initialState, token } from './helpers/initialStateMock';
+import { token } from './helpers/initialStateMock';
 import Game from '../pages/Game';
 import { rankingStorageMock } from './helpers/rankingStorageMock';
 import { questions } from './helpers/questionsMock';
-// import userEvent from '@testing-library/user-event';
-// import Login from './pages/Login';
-// import App from './App';
+import { act } from 'react-dom/test-utils';
 
 describe('Testa a pagina de game', () => {
+  
   beforeEach(() => {
     localStorage.setItem('token', JSON.stringify(token.token));
     localStorage.setItem('ranking', JSON.stringify(rankingStorageMock));
@@ -22,18 +20,17 @@ describe('Testa a pagina de game', () => {
       });
     };
     mockQuestions();
+    jest.useFakeTimers();
   });
 
   it('Verifica se os elementos são renderizado na tela', async () => {
-    const { history } = renderWithRouterAndRedux(<Game />, { initialState });
-    const responseCode = 3;
-    const timeOut = 1000;
+    const { history } = renderWithRouterAndRedux(<Game />);
+    const LOGOUT_CODE = 3;
+    const timeOut = 2000;
 
-    if (questions.response_code === responseCode) {
+    if (questions.response_code === LOGOUT_CODE) {
       expect(!JSON.parse(localStorage.getItem('token')));
-      act(() => {
-        history.push('/');
-      });
+      history.push('/');
       history.location.pathname('/');
     } else {
       const timer = await screen.findByTestId('timer');
@@ -41,38 +38,25 @@ describe('Testa a pagina de game', () => {
 
       expect(timer).toBeInTheDocument();
       expect(timer.innerHTML).toBe('30');
-
+  
       await waitFor(() => {
         expect(timer.innerHTML).toBe('29');
       }, timeOut);
-
+      // jest.advanceTimersByTime(300000);
       expect(await screen.findByTestId('question-text')).toBeInTheDocument();
       expect(await screen.findByTestId('question-category')).toBeInTheDocument();
       expect(await screen.findByTestId('answer-options')).toBeInTheDocument();
       expect(correctBtn).toBeInTheDocument();
       userEvent.click(correctBtn);
       expect(correctBtn).toBeDisabled();
-      
-      await waitFor(() => {
+      // espera que o timer tenha o valor pausado
+
         const nextBtn = screen.queryByRole('button', { name: /next/i });
         expect(nextBtn).toBeInTheDocument();
         userEvent.click(nextBtn);
         expect(timer.innerHTML).toBe('30');
-      });
+    
     }
-
-    // questions.results.forEach( async (questionA, outerIndex) => {
-    //   const correctBtn = await screen.findByTestId('correct-answer');
-    //   expect(correctBtn).toBeInTheDocument();
-    //   userEvent.click(correctBtn);
-    //   if (questionA.correct_answer === correctBtn.innerHTML) {
-
-    //   } else {
-    //     questions.results.forEach( async (questionB, innerIndex) => {
-    //       const incorrectBtn = await screen.findByTestId(`wrong-answer-${innerIndex}`);
-
-    //     });
-    //   }
-    // });
+    jest.useRealTimers();
   });
 });
