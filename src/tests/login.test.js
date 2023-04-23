@@ -1,11 +1,11 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { screen, waitFor } from '@testing-library/react';
-import { act } from 'react-dom/test-utils';
 import { renderWithRouterAndRedux } from './helpers/renderWithRouterAndRedux';
 import Login from '../pages/Login';
-// import { initialState, token } from './helpers/mocks';
 import App from '../App';
+// import { initialState, token } from './helpers/mocks';
+// import { act } from 'react-dom/test-utils';
 
 const testeConstant = 'teste';
 const testeEmailConstant = 'teste@teste.com';
@@ -52,9 +52,7 @@ describe('Testa a pagina de login', () => {
     userEvent.click(btnPlay);
 
     await waitFor(() => {
-      act(() => {
-        history.push('/game');
-      });
+      history.push('/game');
       const { pathname } = history.location;
       expect(pathname).toMatch('/game');
 
@@ -81,9 +79,7 @@ describe('Testa a pagina de login', () => {
     userEvent.click(btnConfig);
 
     await waitFor(() => {
-      act(() => {
-        history.push('/configuracoes');
-      });
+      history.push('/configuracoes');
       const { pathname } = history.location;
       expect(pathname).toMatch('/configuracoes');
       const titleConfig = screen.getByRole('heading', {

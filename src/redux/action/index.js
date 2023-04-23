@@ -1,6 +1,7 @@
 import {
   ADD_PLAYER_SCORE,
   ADD_USER,
+  CHANGE_CONFIG,
   FETCH_QA,
   MAKE_ASSERTION,
   RESET_GAME,
@@ -16,16 +17,6 @@ export const questionsAndAnswers = (data) => ({
   type: FETCH_QA,
   payload: data,
 });
-
-export const fetchEndpointQA = (token) => async (dispatch) => {
-  try {
-    const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
-    const data = await response.json();
-    dispatch(questionsAndAnswers(data));
-  } catch (error) {
-    return error;
-  }
-};
 
 export const changeScore = (score) => ({
   type: SCORE_CHANGE,
@@ -43,4 +34,9 @@ export const resetGame = () => ({
 export const addPlayerScore = (player) => ({
   type: ADD_PLAYER_SCORE,
   payload: player,
+});
+
+export const changeConfig = ({ category, type, difficulty }) => ({
+  type: CHANGE_CONFIG,
+  payload: { category, type, difficulty },
 });

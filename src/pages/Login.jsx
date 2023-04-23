@@ -5,7 +5,7 @@ import getToken from '../services/fetchAPI';
 import Button from '../components/ButtonConfig';
 import { addUser } from '../redux/action';
 import logoTrivia from '../trivia.png';
-import '../styles/Login.css';
+import '../styles/login.css';
 
 class Login extends Component {
   state = {

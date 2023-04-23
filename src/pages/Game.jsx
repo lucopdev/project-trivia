@@ -3,7 +3,12 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import Header from '../components/Header';
-import { changeScore, makeAssertion, resetGame } from '../redux/action';
+import { changeScore,
+  makeAssertion,
+  questionsAndAnswers,
+  resetGame,
+} from '../redux/action';
+import '../styles/game.css';
 
 class Game extends Component {
   state = {
@@ -18,15 +23,17 @@ class Game extends Component {
   };
 
   async componentDidMount() {
-    const { dispatch } = this.props;
+    const { dispatch, category, type, difficulty } = this.props;
     dispatch(resetGame());
     const token = localStorage.getItem('token');
-    const response = await fetch(`https://opentdb.com/api.php?amount=5&token=${token}`);
+    const configs = { category, type, difficulty };
+    const URL = `https://opentdb.com/api.php?amount=5&token=${token}${configs.category}${configs.difficulty}${configs.type}`;
+    const response = await fetch(URL);
     const data = await response.json();
     this.isValidToken(data);
     this.setState({
       data,
-    });
+    }, () => dispatch(questionsAndAnswers(data)));
   }
 
   isValidToken = (data) => {
@@ -52,14 +59,9 @@ class Game extends Component {
   timerCount = () => {
     const { timer, toRespond } = this.state;
     if (timer === 0 || toRespond) {
-      this.setState({
-        timer,
-        disable: true,
-      });
+      this.setState({ timer, disable: true });
     } else {
-      this.setState({
-        timer: timer - 1,
-      });
+      this.setState({ timer: timer - 1 });
     }
   };
 
@@ -76,9 +78,7 @@ class Game extends Component {
           const j = Math.floor(Math.random() * (i + 1));
           [qaRandom[i], qaRandom[j]] = [qaRandom[j], qaRandom[i]];
         }
-        this.setState({
-          qaRandom,
-        });
+        this.setState({ qaRandom });
       });
     }
   };
@@ -86,13 +86,10 @@ class Game extends Component {
   verifyIsCorrect = (element, correctAnswer) => {
     const { dispatch } = this.props;
     const verify = element.innerHTML === correctAnswer;
-    console.log(verify);
     if (verify) {
       dispatch(makeAssertion());
     }
-    this.setState({
-      displayAnswer: true,
-    });
+    this.setState({ displayAnswer: true });
     return verify;
   };
 
@@ -138,18 +135,15 @@ class Game extends Component {
       magicNumber,
       disable,
       timer } = this.state;
-    const styleCorrect = {
-      border: '3px solid rgb(6, 240, 15)',
-    };
-    const styleIncorrect = {
-      border: '3px solid red',
-    };
+    const styleCorrect = { border: '3px solid rgb(6, 240, 15)' };
+    const styleIncorrect = { border: '3px solid red' };
     if (counter === magicNumber) return (<Redirect to="/feedbacks" />);
 
     return (
       <div>
         <Header />
         <h3
+          className="timer"
           data-testid="timer"
         >
           {timer}
@@ -161,6 +155,7 @@ class Game extends Component {
               <div>
                 <div>
                   <h2
+                    className="question"
                     data-testid="question-text"
                     dangerouslySetInnerHTML={ { __html: question.question } }
                   />
@@ -220,6 +215,9 @@ class Game extends Component {
 const mapStateToProps = (state) => ({
   questions: state.game.questions,
   score: state.player.score,
+  category: state.config.category,
+  type: state.config.type,
+  difficulty: state.config.difficulty,
 });
 
 Game.propTypes = {
@@ -234,6 +232,9 @@ Game.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  category: PropTypes.string.isRequired,
+  type: PropTypes.string.isRequired,
+  difficulty: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps)(Game);

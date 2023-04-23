@@ -1,6 +1,6 @@
 export const rankingStorageMock = [
   {
-    assertions: 0,
+    assertions: 1,
     gravatarUrl: "https://www.gravatar.com/avatar/85c8f716441e55c7d22c327f10bc766b",
     name: "Lucas",
     score: 0,
@@ -12,7 +12,7 @@ export const rankingStorageMock = [
     score: 180,
   },
   {
-    assertions: 1,
+    assertions: 2,
     gravatarUrl: "https://www.gravatar.com/avatar/ce11fce876c93ed5d2a72da660496473",
     name: "teste",
     score: 70,
